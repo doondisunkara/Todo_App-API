@@ -175,22 +175,18 @@ app.get("/todos/:todoId/", async (request, response) => {
 });
 
 //API 3 Agenda
-app.get(
-  "/agenda/?date:date",
-  checkRequestQueries,
-  async (request, response) => {
-    const { date } = request;
-    const getAgenda = `SELECT * FROM todo WHERE due_date = '${date}';`;
-    const agenda = await db.all(getAgenda);
-    response.send(agenda.map((eachTodo) => convertTodo(eachTodo)));
-  }
-);
+app.get("/agenda/", checkRequestQueries, async (request, response) => {
+  const { date } = request;
+  const getAgenda = `SELECT * FROM todo WHERE due_date = '${date}';`;
+  const agenda = await db.all(getAgenda);
+  response.send(agenda.map((eachTodo) => convertTodo(eachTodo)));
+});
 
 //API 4 Create Todo
 app.post("/todos", checkRequestBody, async (request, response) => {
   const { id, todo, category, priority, status, dueDate } = request;
   const createTodo = `
-    INSERT INTO todo
+    INSERT INTO todo (id, todo, category, priority, status, due_date)
     VALUES (
         ${id},
         '${todo}',
